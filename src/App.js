@@ -5,6 +5,7 @@ import ClientRegistration from './components/ClientRegistration';
 import SellerRegistration from './components/SellerRegistration';
 import AdminRegistration from './components/AdminRegistration';
 import ProductsPage from './components/ProductsPage';
+import './App.css'
 
 const App = () => {
   return (
