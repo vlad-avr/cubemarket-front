@@ -1,0 +1,17 @@
+services:
+  # cubemarket-back: 
+  #   container_name: cubemarket-back
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   ports:
+  #     - 5050:5050
+  cubemarket-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "example"
+    ports:
+      - 5432:5432
