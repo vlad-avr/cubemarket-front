@@ -26,10 +26,10 @@ nav {
 nav ul {
   list-style-type: none;
   display: flex;
-  justify-content: space-around;
+  justify-content: right;
 }
 
-nav ul li a {
+/* nav ul li a {
   color: white;
   text-decoration: none;
   padding: 10px;
@@ -39,7 +39,7 @@ nav ul li a {
 nav ul li a:hover {
   background-color: #0056b3;
   border-radius: 5px;
-}
+} */
 
 /* Search Bar Styles */
 input[type="text"] {
@@ -127,5 +127,63 @@ button.add-product {
 }
 
 button.add-product:hover {
+  background-color: #0056b3;
+}
+
+.sign_up a, .sign_in a{
+  color: white;
+  background-color: #0056b3;
+  text-decoration: none;
+  padding: 10px;
+  font-size: 16px;
+  margin-right: 20px;
+}
+
+.sign_up a:hover, .sign_in a:hover{
+  background-color: white;
+  color: #0056b3;
+  border-radius: 5px;
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full screen height */
+  background-color: #f0f4f8; /* Light background to contrast with search bar */
+}
+
+input[type="text"] {
+  width: 60%; /* Make the search bar wider */
+  max-width: 600px; /* Set a maximum width for larger screens */
+  padding: 15px; /* Increase padding for a larger input field */
+  font-size: 18px; /* Increase font size */
+  border: 2px solid #007bff; /* Add border color matching your theme */
+  border-radius: 30px; /* Rounded corners */
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+input[type="text"]:focus {
+  border-color: #0056b3; /* Darken the border color on focus */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Increase shadow on focus */
+}
+
+button.search-button {
+  margin-left: 10px;
+  padding: 15px 25px;
+  font-size: 18px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 10%;
+}
+
+button.search-button:hover {
   background-color: #0056b3;
 }

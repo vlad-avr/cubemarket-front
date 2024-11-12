@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 
-const Registration = () => {
+const Auth = () => {
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: '',
   });
@@ -13,21 +12,13 @@ const Registration = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(`registration data: `, formData);
+    console.log(`auth data: `, formData);
   };
 
   return (
     <div>
-      <h2>Sign up</h2>
+      <h2>Sign in</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
         <input
           type="email"
           name="email"
@@ -50,4 +41,4 @@ const Registration = () => {
   );
 };
 
-export default Registration;
+export default Auth;
