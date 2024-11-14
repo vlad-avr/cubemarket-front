@@ -1,5 +1,5 @@
-import { db } from "../../db"
-import { usersTable } from "../../db/schema"
+import { db } from "../../db/index.js"
+import { usersTable } from "../../db/schema.js"
 import { v4 } from 'uuid'
 import bcrypt from 'bcrypt'
 

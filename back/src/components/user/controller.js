@@ -1,4 +1,4 @@
-import { register } from "./logic"
+import { register } from "./logic.js"
 
 export const UserController = (server, opts, done) => {
     server.get('/', (req, rep) => {
