@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "swc src -d dist --copy-files --strip-leading-paths",
-    "dev": "nodemon --delay 500ms src/main.js 80",
+    "dev": "node src/main.js",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
     "studio": "drizzle-kit studio"
@@ -21,9 +21,9 @@
   "dependencies": {
     "@fastify/swagger": "^9.2.0",
     "@fastify/swagger-ui": "^5.1.0",
+    "@fastify/type-provider-typebox": "^5.0.1",
     "@mgcrea/fastify-request-logger": "^1.8.0",
     "@mgcrea/pino-pretty-compact": "^1.3.0",
-    "@sinclair/typebox": "^0.34.0",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.36.1",

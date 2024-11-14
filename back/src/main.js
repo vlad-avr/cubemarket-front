@@ -3,6 +3,7 @@ import fastifyRequestLogger from "@mgcrea/fastify-request-logger";
 import prettifier from "@mgcrea/pino-pretty-compact";
 import { ControllerRegistrator } from './plugins/controller-registrator.js';
 import { Swagger } from './plugins/swagger.js';
+import { Type } from '@fastify/type-provider-typebox'
 
 const fastify = Fastify({
   logger: {
@@ -12,7 +13,7 @@ const fastify = Fastify({
       options: { translateTime: "HH:MM:ss Z", ignore: "pid,hostname" },
     },
   }
-})
+}).withTypeProvider()
 
 fastify.register(Swagger, { prefix: '/docs' })
 fastify.register(fastifyRequestLogger);
