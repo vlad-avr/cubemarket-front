@@ -5,23 +5,30 @@ import bcrypt from 'bcrypt'
 import { eq } from "drizzle-orm"
 import jwt from 'jsonwebtoken'
 import 'dotenv/config';
+import { NotFoundError } from "../../plugins/error/not-found.js"
 
 export const getUser = async (id) => {
-    const user = await db.select({
+    const user = (await db.select({
         id: usersTable.id,
         email: usersTable.email,
         name: usersTable.name
-    }).from(usersTable).where(eq(usersTable.id, id))
-    return user[0]
+    }).from(usersTable).where(eq(usersTable.id, id)))[0]
+    if (!user) {
+        throw new NotFoundError()
+    }
+    return user
 }
 
 export const getUserByEmail = async (email) => {
-    const user = await db.select({
+    const user = (await db.select({
         id: usersTable.id,
         email: usersTable.email,
         name: usersTable.name
-    }).from(usersTable).where(eq(usersTable.email, email))
-    return user[0]
+    }).from(usersTable).where(eq(usersTable.email, email)))[0]
+    if (!user){
+        throw new NotFoundError()
+    }
+    return user
 }
 
 export const getHashedPassword = async (id) => {

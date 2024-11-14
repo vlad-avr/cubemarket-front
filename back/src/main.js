@@ -3,6 +3,7 @@ import fastifyRequestLogger from "@mgcrea/fastify-request-logger";
 import prettifier from "@mgcrea/pino-pretty-compact";
 import { ControllerRegistrator } from './plugins/controller-registrator.js';
 import { Swagger } from './plugins/swagger.js';
+import { errorHandler } from './plugins/error/error-handler.js';
 
 const fastify = Fastify({
   logger: {
@@ -17,6 +18,8 @@ const fastify = Fastify({
 fastify.register(Swagger, { prefix: '/docs' })
 fastify.register(fastifyRequestLogger);
 fastify.register(ControllerRegistrator)
+
+fastify.setErrorHandler(errorHandler)
 
 fastify.get('/', function (request, reply) {
   reply.send({ hello: 'world' })
