@@ -3,7 +3,6 @@ import fastifyRequestLogger from "@mgcrea/fastify-request-logger";
 import prettifier from "@mgcrea/pino-pretty-compact";
 import { ControllerRegistrator } from './plugins/controller-registrator.js';
 import { Swagger } from './plugins/swagger.js';
-import { Type } from '@fastify/type-provider-typebox'
 
 const fastify = Fastify({
   logger: {

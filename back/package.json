@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "swc src -d dist --copy-files --strip-leading-paths",
-    "dev": "node src/main.js",
+    "dev": "nodemon --delay 500ms src/main.js 80",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
     "studio": "drizzle-kit studio"
