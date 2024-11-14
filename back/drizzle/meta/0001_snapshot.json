@@ -1,6 +1,6 @@
 {
-  "id": "e924bc79-c808-4927-8ea6-fdcd70a54cef",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "bc047d21-1fbd-4df8-890e-bb0958deaa4e",
+  "prevId": "e924bc79-c808-4927-8ea6-fdcd70a54cef",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -23,6 +23,12 @@
         "email": {
           "name": "email",
           "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         }
