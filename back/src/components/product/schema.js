@@ -8,3 +8,12 @@ export const Product = Type.Object({
     picture: Type.Optional(Type.String()),
     userId: Type.String(),
 })
+
+export const PostProduct = {
+    body: Type.Omit(Product, ['id', 'userId', 'leftover']),
+    response: {
+        200: Type.Object({
+            id: Type.String()
+        })
+    }
+}
