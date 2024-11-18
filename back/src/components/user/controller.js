@@ -1,10 +1,7 @@
-import { AddTagPlugin } from "../../plugins/add-tag.js"
 import { getUser, login, register } from "./logic.js"
 import { Get, Login, Register } from "./schema.js"
 
 export const UserController = (server, opts, done) => {
-    server.addHook('onRoute', AddTagPlugin('Users'))
-
     server.get('/:id', { schema: Get }, async (req, rep) => {
         return await getUser(req.params.id)
     })

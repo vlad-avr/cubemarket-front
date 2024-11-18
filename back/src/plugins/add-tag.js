@@ -1,12 +1,14 @@
-import { fastifyPlugin } from "fastify-plugin"
+import fastifyPlugin from "fastify-plugin"
 
-export const AddTagPlugin = (tag) => {
-    return (route) => {
+export const AddTagPlugin = fastifyPlugin.default((server, opts, done) => {
+    server.addHook('onRoute', (route) => {
         if (route.method === 'HEAD') {
             return
         }
         
         route.schema ??= {}
-        route.schema.tags = [tag]
-    }
-}
+        route.schema.tags = [opts.tag]
+    })
+
+    done()
+})

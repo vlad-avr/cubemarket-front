@@ -1,9 +1,9 @@
-import { ProductController } from "../components/product/controller.js"
-import { UserController } from "../components/user/controller.js"
+import { ProductRegistrator } from "../components/product/registrator.js"
+import { UserRegistrator } from "../components/user/registrator.js"
 
 export const ControllerRegistrator = (server, opts, done) => {
-    server.register(UserController, { prefix: '/user' })
-    server.register(ProductController, { prefix: '/product' })
+    server.register(UserRegistrator, { prefix: '/user' })
+    server.register(ProductRegistrator, { prefix: '/product' })
 
     done()
 }
