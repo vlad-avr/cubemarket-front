@@ -10,10 +10,15 @@ export const Swagger = fastifyPlugin((server, opts, done) => {
             title: 'Cubemarket API',
             version: '0.1.0'
           },
-          externalDocs: {
-            url: 'https://swagger.io',
-            description: 'Find more info here'
-          }
+          components: {
+            securitySchemes: {
+              BearerAuth: {
+                type: "http",
+                scheme: "bearer",
+                bearerFormat: "JWT",
+              },
+            },
+          },
         }
       })
       

@@ -8,9 +8,11 @@ export const User = Type.Object({
 })
 
 export const Register = {
-    body: Type.Composite([Type.Object({
+    body: Type.Object({
         password: Type.String(),
-    })], Type.Omit(User, ['id'])),
+        name: Type.String(),
+        email: Type.String()
+    }),
     response: {
         200: Type.Object({
             id: Type.String()

@@ -9,8 +9,9 @@ export const errorHandler = (error, req, rep) => {
     }
 
     const serverError = CustomError.parse(error)
-    rep.code(serverError.statusCode).send({
-        message: 'Server side error occured',
-        statusCode: serverError.statusCode
-    })
+    rep.send(error)
+    // rep.code(serverError.statusCode).send({
+    //     message: 'Server side error occured',
+    //     statusCode: serverError.statusCode
+    // })
 }
