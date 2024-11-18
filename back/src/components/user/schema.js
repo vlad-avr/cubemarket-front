@@ -4,6 +4,7 @@ export const User = Type.Object({
     email: Type.String(),
     name: Type.String(),
     id: Type.String(),
+    balance: Type.Number()
 })
 
 export const Register = {

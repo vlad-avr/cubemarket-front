@@ -47,6 +47,7 @@ export const  register = async (body) => {
         name: body.name,
         id,
         password,
+        balance: 0,
     })
     return id
 }
