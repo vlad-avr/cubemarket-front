@@ -17,3 +17,10 @@ export const PostProduct = {
         })
     }
 }
+
+export const UpdateProduct = {
+    body: Type.Composite([
+        Type.Pick(Product, ['id']),
+        Type.Partial(Type.Pick(Product, ['name', 'description']))
+    ])
+}

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { db } from "../../db/index.js"
 import { productTable } from "../../db/schema.js"
 import { NotFoundError } from "../../plugins/error/not-found.js"
@@ -24,4 +24,13 @@ export const postProduct = async (user, body) => {
     })
 
     return {id}
+}
+
+export const updateProduct = async (user, body) => {
+    await db.update(productTable).set({
+        leftover: body.leftover,
+        name: body.name,
+        description: body.description,
+        picture: body.picture,
+    }).where(and(eq(productTable.id, body.id), eq(productTable.userId, user.id)))
 }

@@ -57,9 +57,7 @@ export const login = async (body) => {
     const hashedPswd = await getHashedPassword(user.id)
     const verified = await bcrypt.compare(body.password, hashedPswd)
     if(!verified){
-        return {
-            mes: 'ni'
-        }
+        throw new NotFoundError()
     }
     const token = jwt.sign(user, process.env.SECRET_KEY)
     return { token }
