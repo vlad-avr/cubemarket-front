@@ -12,7 +12,15 @@ export const productTable = pgTable("products", {
   name: varchar({ length: 255 }).notNull(),
   leftover: integer().notNull(),
   description: varchar(),
+  price: integer(),
   picture: varchar({ length: 255 }),
   userId: varchar({ length: 255 }).references(() => usersTable.id)
 })
 
+export const transactionTable = pgTable("transactions", {
+  id: varchar({ length: 255 }).primaryKey(),
+  amount_sold: integer().notNull(),
+  amount_payed: integer().notNull(),
+  product: varchar({ length: 255 }).references(() => productTable.id),
+  buyer: varchar({ length: 255 }).references(() => usersTable.id),
+})
