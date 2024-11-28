@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm"
+import { and, asc, eq, gte, ilike, lte } from "drizzle-orm"
 import { db } from "../../db/index.js"
 import { productTable } from "../../db/schema.js"
 import { NotFoundError } from "../../plugins/error/not-found.js"
@@ -9,6 +9,25 @@ export const getProduct = async (id) => {
     if (!product) {
         throw new NotFoundError()
     }
+    return product
+}
+
+export const getProductList = async (query) => {
+    const product = await db.
+    select()
+    .from(productTable)
+    .where(
+        and(
+            query.name ? ilike(productTable.name, query.name) : undefined,
+            query.user ? eq(productTable.userId, query.user) : undefined,
+            query.lowPrice ? gte(productTable.price, query.lowPrice) : undefined,
+            query.highPrice ? lte(productTable.price, query.highPrice) : undefined
+        )
+    )
+    .orderBy(asc(productTable.leftover))
+    .limit(query.limit)
+    .offset(query.offset)
+
     return product
 }
 

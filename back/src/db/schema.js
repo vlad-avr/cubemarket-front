@@ -21,6 +21,7 @@ export const transactionTable = pgTable("transactions", {
   id: varchar({ length: 255 }).primaryKey(),
   amount_sold: integer().notNull(),
   amount_payed: integer().notNull(),
+  date: integer(),
   product: varchar({ length: 255 }).references(() => productTable.id),
   buyer: varchar({ length: 255 }).references(() => usersTable.id),
 })

@@ -1,5 +1,5 @@
-import { getProduct, postProduct, updateProduct } from "./logic.js" 
-import { PostProduct, UpdateProduct } from "./schema.js"
+import { getProduct, getProductList, postProduct, updateProduct } from "./logic.js" 
+import { PostProduct, ProductList, UpdateProduct } from "./schema.js"
 
 export const ProductController = (server, opts, done) => {
     server.get('/:id', async (req, rep) => {
