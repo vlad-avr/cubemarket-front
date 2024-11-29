@@ -18,7 +18,7 @@ export const getProductList = async (query) => {
     .from(productTable)
     .where(
         and(
-            query.name ? ilike(productTable.name, query.name) : undefined,
+            query.name ? ilike(productTable.name, `%${query.name}%`) : undefined,
             query.user ? eq(productTable.userId, query.user) : undefined,
             query.lowPrice ? gte(productTable.price, query.lowPrice) : undefined,
             query.highPrice ? lte(productTable.price, query.highPrice) : undefined
