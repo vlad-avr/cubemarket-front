@@ -40,3 +40,11 @@ export const Get = {
         200: User
     }
 }
+
+export const Put = {
+    body: Type.Omit(User, [
+        'id',
+        'email',
+        'balance'
+    ])
+}

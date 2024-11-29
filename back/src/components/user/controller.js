@@ -1,9 +1,9 @@
-import { getUser, login, register } from "./logic.js"
-import { Get, Login, Register } from "./schema.js"
+import { putUser } from "./logic.js"
+import { Put } from "./schema.js"
 
 export const UserController = (server, opts, done) => {
-    server.put('/', (req, rep) => {
-        
+    server.put('/', { schema: Put }, async (req, rep) => {
+        await putUser(req.user, req.body)
     })
 
     done()

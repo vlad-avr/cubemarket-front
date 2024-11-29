@@ -64,5 +64,11 @@ export const login = async (body) => {
 }
 
 export const putUser = async (user, body) => {
-    
+    await db
+    .update(usersTable)
+    .set({
+        name: body.name,
+        balance: body.balance
+    })
+    .where(eq(usersTable.id, user.id))
 }
