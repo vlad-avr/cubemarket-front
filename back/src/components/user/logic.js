@@ -62,3 +62,7 @@ export const login = async (body) => {
     const token = jwt.sign(user, process.env.SECRET_KEY)
     return { token }
 }
+
+export const putUser = async (user, body) => {
+    
+}

@@ -53,3 +53,7 @@ export const updateProduct = async (user, body) => {
         picture: body.picture,
     }).where(and(eq(productTable.id, body.id), eq(productTable.userId, user.id)))
 }
+
+export const buyProduct = async (user, body) => {
+    
+}

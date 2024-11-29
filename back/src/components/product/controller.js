@@ -10,6 +10,8 @@ export const ProductController = (server, opts, done) => {
         return await postProduct(req.user, req.body)
     })
 
+    server.post('/buy', {}, async (req, rep) => {})
+
     server.put('/', { schema: UpdateProduct }, async (req, res) => {
         return await updateProduct(req.user, req.body)
     })
