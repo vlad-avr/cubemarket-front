@@ -1,37 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const MainPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  // Check if the user is logged in from localStorage
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    setIsLoggedIn(!!user);
+  }, []);
 
   const handleInputChange = (event) => {
-    setSearchTerm(event.target.value); // Update the searchText state
+    setSearchTerm(event.target.value);
   };
 
-  // Function to log search text to the console
   const handleSearchClick = () => {
-    console.log(searchTerm); // Log the current search text
+    navigate(`/products?search=${encodeURIComponent(searchTerm)}`);
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+    navigate('/');
   };
 
   return (
     <div>
       <nav>
         <ul>
-          <li className='sign_up'><a href="/registration">Sign up</a></li>
-          <li className='sign_in'><a href="/auth">Sign in</a></li>
+          {isLoggedIn ? (
+            <>
+              <li className="sign_up">
+                <button onClick={() => navigate('/personal')}>Personal Page</button>
+              </li>
+              <li className="sign_up">
+                <button onClick={handleSignOut}>Sign Out</button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li className="sign_up">
+                <a href="/registration">Sign up</a>
+              </li>
+              <li className="sign_up">
+                <a href="/auth">Sign in</a>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
       <h1>Welcome to the Marketplace</h1>
       <div className="search-container">
-      <input
-        type="text"
-        placeholder="Search for products..."
-        value={searchTerm} // Bind input value to state
-        onChange={handleInputChange} // Handle input change
-      />
-      <button className="search-button" onClick={handleSearchClick}>
-        Search
-      </button>
-    </div>
+        <input
+          type="text"
+          placeholder="Search for products..."
+          value={searchTerm}
+          onChange={handleInputChange}
+        />
+        <button className="search-button" onClick={handleSearchClick}>
+          Search
+        </button>
+      </div>
     </div>
   );
 };

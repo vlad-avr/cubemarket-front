@@ -1,0 +1,101 @@
+/* General styling for the personal page */
+.personal-page {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .personal-page h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .personal-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .personal-info p {
+    margin: 8px 0;
+    color: #555;
+  }
+  
+  .personal-info p strong {
+    color: #000;
+  }
+  
+  .personal-info button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .personal-info button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Styling for forms */
+  .form-container {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .form-container h3 {
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .form-container label {
+    display: block;
+    margin: 10px 0 5px;
+    color: #555;
+  }
+  
+  .form-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .form-container button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .form-container button:hover {
+    background-color: #218838;
+  }
+  
+  .form-container button.cancel {
+    background-color: #dc3545;
+  }
+  
+  .form-container button.cancel:hover {
+    background-color: #c82333;
+  }
+  
