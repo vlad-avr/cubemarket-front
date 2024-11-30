@@ -1,4 +1,4 @@
-import { and, asc, eq, gte, ilike, lte } from "drizzle-orm"
+import { and, asc, eq, gte, ilike, lte, sql } from "drizzle-orm"
 import { db } from "../../db/index.js"
 import { productTable } from "../../db/schema.js"
 import { NotFoundError } from "../../plugins/error/not-found.js"
@@ -52,7 +52,7 @@ export const postProduct = async (user, body) => {
 
 export const updateProduct = async (user, body) => {
     await db.update(productTable).set({
-        leftover: body.leftover,
+        leftover: sql`(select (${productTable.leftover} + ${body.leftover}) as leftover from ${productTable} where ${productTable.id} = ${body.id})`,
         name: body.name,
         description: body.description,
         picture: body.picture,
@@ -75,13 +75,15 @@ export const buyProduct = async (user, body) => {
     }
     await updateProduct(seller, {
         id: purchasedProduct.id,
-        leftover: purchasedProduct.leftover - body.amount_sold
+        leftover: (-1)*body.amount_sold
     })
     await putUser(buyer, {
         balance: (-1)*amount_payed 
     })
     await postTransaction({
         ...body,
+        amount_payed,
+        buyer: user.id,
         date: new Date().getTime(),
     })
 }
