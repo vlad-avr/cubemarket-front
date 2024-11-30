@@ -37,7 +37,7 @@
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    /* background-color: #007bff; */
     color: #fff;
     cursor: pointer;
     font-size: 14px;
@@ -81,7 +81,7 @@
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
-    background-color: #28a745;
+    /* background-color: #28a745; */
     color: #fff;
     cursor: pointer;
     font-size: 14px;
@@ -99,3 +99,17 @@
     background-color: #c82333;
   }
   
+  .main_b{
+    background-color: #20b440;
+  }
+  .main_b:hover{
+    background-color: #146727;
+  }
+
+  .sign_out{
+    background-color: #dc3545;
+  }
+
+  .sign_out:hover{
+    background-color: #94202b;
+  }

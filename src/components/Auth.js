@@ -8,19 +8,17 @@ const Auth = () => {
   });
   const [message, setMessage] = useState('');
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
-
-  // TESTING TESTING
-  const userData = {
+  // Mock user data for testing purposes
+  const mockUserData = {
     id: "12345",
     name: "John Doe",
     email: "johndoe@example.com",
     balance: 1000.0,
+    role: "user",
     token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", // A mock JWT token
   };
-
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,7 +30,7 @@ const Auth = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(`auth data: `, formData);
+    console.log(`Auth data: `, formData);
 
     try {
       const response = await fetch('http://localhost:5051/user/login', {
@@ -46,7 +44,20 @@ const Auth = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('Login successful:', data);
+
+        // Save the user data to localStorage
+        const userData = {
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          balance: data.balance || 0,
+          role: data.role || 'user', // Assign default role if not provided
+          token: data.token, // Store JWT token for future use
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
+
         setMessage('Login successful!');
+        navigate('/personal'); // Redirect to Personal Page
       } else {
         const error = await response.json();
         console.error('Login failed:', error);
@@ -54,8 +65,11 @@ const Auth = () => {
       }
     } catch (err) {
       console.error('Network error:', err);
-      setMessage('Network error: Please try again later.');
-      localStorage.setItem('user', JSON.stringify(userData));
+
+      // For testing purposes: use mock data if API call fails
+      localStorage.setItem('user', JSON.stringify(mockUserData));
+      setMessage('Mock login successful! Testing data saved.');
+      navigate('/personal'); // Redirect to Personal Page
     }
   };
 

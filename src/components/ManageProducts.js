@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ManageProducts.css';
 
 const ManageProducts = () => {
@@ -7,6 +8,7 @@ const ManageProducts = () => {
     { id: 2, name: 'Product 2', price: '$20', image: 'https://via.placeholder.com/150' },
   ]);
   const [newProduct, setNewProduct] = useState({ name: '', price: '', image: '' });
+  const navigate = useNavigate();
 
   const handleAddProduct = () => {
     setProducts([...products, { ...newProduct, id: products.length + 1 }]);
@@ -51,6 +53,10 @@ const ManageProducts = () => {
         onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
       />
       <button className="pp_button" onClick={handleAddProduct}>Add Product</button>
+
+      <div className="navigation-buttons">
+        <button className="pp_button" onClick={() => navigate('/personal')}>Back to Personal Page</button>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ManageUsers.css';
 
 const ManageUsers = () => {
@@ -6,6 +7,7 @@ const ManageUsers = () => {
     { id: 1, name: 'John Doe', email: 'john.doe@example.com', status: 'active' },
     { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', status: 'active' },
   ]);
+  const navigate = useNavigate();
 
   const handleBlockUser = (userId) => {
     setUsers(users.map((user) => (user.id === userId ? { ...user, status: 'blocked' } : user)));
@@ -41,6 +43,10 @@ const ManageUsers = () => {
           ))}
         </tbody>
       </table>
+
+      <div className="navigation-buttons">
+        <button className="pp_button" onClick={() => navigate('/personal')}>Back to Personal Page</button>
+      </div>
     </div>
   );
 };

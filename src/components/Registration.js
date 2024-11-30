@@ -17,9 +17,9 @@ const Registration = () => {
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'name is required.';
+      newErrors.name = 'Name is required.';
     } else if (formData.name.length < 3) {
-      newErrors.name = 'name must be at least 3 characters.';
+      newErrors.name = 'Name must be at least 3 characters.';
     }
 
     if (!formData.email.trim()) {
@@ -67,7 +67,18 @@ const Registration = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('Registration successful:', data);
+
+        // Save user data to localStorage
+        const userData = {
+          name: formData.name,
+          email: formData.email,
+          role: data.role || 'user', // Assign a role if returned by the API
+          balance: data.balance || 0, // Default balance
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
+
         setMessage('Registration successful!');
+        navigate('/personal_page'); // Redirect to Personal Page or another route
       } else {
         const error = await response.json();
         console.error('Registration failed:', error);
@@ -87,7 +98,7 @@ const Registration = () => {
           <input
             type="text"
             name="name"
-            placeholder="name"
+            placeholder="Name"
             value={formData.name}
             onChange={handleChange}
             required
