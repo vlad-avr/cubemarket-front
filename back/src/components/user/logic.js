@@ -2,7 +2,7 @@ import { db } from "../../db/index.js"
 import { usersTable } from "../../db/schema.js"
 import { v4 } from 'uuid'
 import bcrypt from 'bcrypt'
-import { eq } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 import jwt from 'jsonwebtoken'
 import 'dotenv/config';
 import { NotFoundError } from "../../plugins/error/not-found.js"
@@ -70,7 +70,7 @@ export const putUser = async (user, body) => {
     .update(usersTable)
     .set({
         name: body.name,
-        balance: body.balance
+        balance: sql`(select (${usersTable.balance} + ${body.balance}) as balance from ${usersTable} where ${usersTable.id} = ${user.id})`,
     })
     .where(eq(usersTable.id, user.id))
 }

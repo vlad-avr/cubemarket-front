@@ -42,9 +42,8 @@ export const Get = {
 }
 
 export const Put = {
-    body: Type.Omit(User, [
+    body: Type.Partial(Type.Omit(User, [
         'id',
-        'email',
-        'balance'
-    ])
+        'email'
+    ]))
 }

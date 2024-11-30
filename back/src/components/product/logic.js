@@ -78,7 +78,7 @@ export const buyProduct = async (user, body) => {
         leftover: purchasedProduct.leftover - body.amount_sold
     })
     await putUser(buyer, {
-        balance: buyer.balance - amount_payed
+        balance: (-1)*amount_payed 
     })
     await postTransaction({
         ...body,
