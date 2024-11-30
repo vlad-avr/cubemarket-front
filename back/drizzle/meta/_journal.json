@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1731963874813,
-      "tag": "0000_violet_puma",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1731967300598,
-      "tag": "0001_messy_anthem",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1732834857297,
-      "tag": "0002_flat_trauma",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1732835007492,
-      "tag": "0003_new_mongu",
+      "when": 1732924566712,
+      "tag": "0000_lumpy_dust",
       "breakpoints": true
     }
   ]

@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { db } from '../../db'
+import { db } from '../../db/index.js'
 import { transactionTable } from '../../db/schema.js'
 import { asc } from 'drizzle-orm'
 

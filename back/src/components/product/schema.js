@@ -1,4 +1,5 @@
 import { Type } from "@fastify/type-provider-typebox";
+import { Transaction } from "../transaction/schema.js";
 
 export const Product = Type.Object({
     id: Type.String(),
@@ -37,5 +38,14 @@ export const UpdateProduct = {
     body: Type.Composite([
         Type.Pick(Product, ['id']),
         Type.Partial(Type.Pick(Product, ['name', 'description', 'price']))
+    ])
+}
+
+export const BuyProduct = {
+    body: Type.Omit(Transaction, [
+        'id',
+        'date',
+        'buyer',
+        'amount_payed'
     ])
 }

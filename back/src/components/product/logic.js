@@ -3,6 +3,9 @@ import { db } from "../../db/index.js"
 import { productTable } from "../../db/schema.js"
 import { NotFoundError } from "../../plugins/error/not-found.js"
 import { v4 } from 'uuid'
+import { BadRequest } from "../../plugins/error/bad-request.js"
+import { getUser, putUser } from "../user/logic.js"
+import { postTransaction } from "../transaction/logic.js"
 
 export const getProduct = async (id) => {
     const product = (await db.select().from(productTable).where(eq(productTable.id, id)))[0]
@@ -12,6 +15,7 @@ export const getProduct = async (id) => {
     return product
 }
 
+// need list of products without own products
 export const getProductList = async (query) => {
     const product = await db.
     select()
@@ -39,7 +43,8 @@ export const postProduct = async (user, body) => {
         name: body.name,
         description: body.description,
         picture: body.picture,
-        userId: user.id
+        userId: user.id,
+        price: body.price
     })
 
     return {id}
@@ -55,5 +60,28 @@ export const updateProduct = async (user, body) => {
 }
 
 export const buyProduct = async (user, body) => {
-    
+    const purchasedProduct = await getProduct(body.product)
+    const seller = await getUser(purchasedProduct.userId)
+    const buyer = await getUser(user.id)
+    const amount_payed = body.amount_sold*purchasedProduct.price
+    if(user.id === purchasedProduct.userId){
+        throw new BadRequest("Can't buy own product")
+    }
+    if(purchasedProduct.leftover < body.amount_sold){
+        throw new BadRequest("Not enough product")
+    }
+    if(buyer.balance < amount_payed){
+        throw new BadRequest("Not enough money")
+    }
+    await updateProduct(seller, {
+        id: purchasedProduct.id,
+        leftover: purchasedProduct.leftover - body.amount_sold
+    })
+    await putUser(buyer, {
+        balance: buyer.balance - amount_payed
+    })
+    await postTransaction({
+        ...body,
+        date: new Date().getTime(),
+    })
 }

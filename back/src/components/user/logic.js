@@ -11,7 +11,8 @@ export const getUser = async (id) => {
     const user = (await db.select({
         id: usersTable.id,
         email: usersTable.email,
-        name: usersTable.name
+        name: usersTable.name,
+        balance: usersTable.balance,
     }).from(usersTable).where(eq(usersTable.id, id)))[0]
     if (!user) {
         throw new NotFoundError()
@@ -23,7 +24,8 @@ export const getUserByEmail = async (email) => {
     const user = (await db.select({
         id: usersTable.id,
         email: usersTable.email,
-        name: usersTable.name
+        name: usersTable.name,
+        balance: usersTable.balance,
     }).from(usersTable).where(eq(usersTable.email, email)))[0]
     if (!user){
         throw new NotFoundError()
