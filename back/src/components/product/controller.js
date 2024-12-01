@@ -19,7 +19,7 @@ export const ProductController = (server, opts, done) => {
     })
 
     server.delete('/setDelete', { schema: DeleteProduct }, async (req, res) => {
-        return await updateProduct(req.user, res.body)
+        return await updateProduct(req.user, req.body)
     })
 
     done()

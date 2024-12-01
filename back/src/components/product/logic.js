@@ -57,7 +57,7 @@ export const postProduct = async (user, body) => {
 
 export const updateProduct = async (user, body) => {
     await db.update(productTable).set({
-        leftover: sql`(select (${productTable.leftover} + ${body.leftover}) as leftover from ${productTable} where ${productTable.id} = ${body.id})`,
+        leftover: body.leftover ? sql`(select (${productTable.leftover} + ${body.leftover}) as leftover from ${productTable} where ${productTable.id} = ${body.id})` : body.leftover,
         name: body.name,
         description: body.description,
         picture: body.picture,
