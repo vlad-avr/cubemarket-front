@@ -78,7 +78,7 @@ const Registration = () => {
         localStorage.setItem('user', JSON.stringify(userData));
 
         setMessage('Registration successful!');
-        navigate('/personal_page'); // Redirect to Personal Page or another route
+        navigate('/personal'); // Redirect to Personal Page or another route
       } else {
         const error = await response.json();
         console.error('Registration failed:', error);

@@ -65,11 +65,7 @@ const Auth = () => {
       }
     } catch (err) {
       console.error('Network error:', err);
-
-      // For testing purposes: use mock data if API call fails
-      localStorage.setItem('user', JSON.stringify(mockUserData));
       setMessage('Mock login successful! Testing data saved.');
-      navigate('/personal'); // Redirect to Personal Page
     }
   };
 
