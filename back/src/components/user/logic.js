@@ -81,6 +81,7 @@ export const putUser = async (user, body) => {
     .set({
         name: body.name,
         balance: body.balance ? sql`(select (${usersTable.balance} + ${body.balance}) as balance from ${usersTable} where ${usersTable.id} = ${user.id})` : body.balance,
+        role: body.role,
     })
     .where(eq(usersTable.id, user.id))
 }
