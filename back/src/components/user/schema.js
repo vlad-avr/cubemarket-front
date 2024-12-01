@@ -8,6 +8,7 @@ export const User = Type.Object({
     id: Type.String(),
     balance: Type.Number(),
     role: Type.Union(UserRole.map(r => Type.Literal(r))),
+    blocked: Type.Boolean()
 })
 
 export const Register = {
@@ -48,6 +49,7 @@ export const Put = {
     body: Type.Partial(Type.Omit(User, [
         'id',
         'email',
-        'role'
+        'role',
+        'blocked'
     ]))
 }
