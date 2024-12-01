@@ -1,4 +1,4 @@
-import { and, asc, eq, gte, ilike, lte, sql } from "drizzle-orm"
+import { and, asc, eq, gte, ilike, lte, ne, sql } from "drizzle-orm"
 import { db } from "../../db/index.js"
 import { productTable } from "../../db/schema.js"
 import { NotFoundError } from "../../plugins/error/not-found.js"
@@ -12,6 +12,9 @@ export const getProduct = async (id) => {
     if (!product) {
         throw new NotFoundError()
     }
+    if(product.delete){
+        throw new BadRequest("Product was deleted")
+    }
     return product
 }
 
@@ -22,6 +25,7 @@ export const getProductList = async (query) => {
     .from(productTable)
     .where(
         and(
+            eq(productTable.delete, query.delete),
             query.name ? ilike(productTable.name, `%${query.name}%`) : undefined,
             query.user ? eq(productTable.userId, query.user) : undefined,
             query.lowPrice ? gte(productTable.price, query.lowPrice) : undefined,
@@ -44,7 +48,8 @@ export const postProduct = async (user, body) => {
         description: body.description,
         picture: body.picture,
         userId: user.id,
-        price: body.price
+        price: body.price,
+        delete: false
     })
 
     return {id}
@@ -56,6 +61,7 @@ export const updateProduct = async (user, body) => {
         name: body.name,
         description: body.description,
         picture: body.picture,
+        delete: body.delete,
     }).where(and(eq(productTable.id, body.id), eq(productTable.userId, user.id)))
 }
 

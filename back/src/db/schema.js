@@ -1,4 +1,4 @@
-import { bigint, integer, pgTable, varchar } from "drizzle-orm/pg-core";
+import { bigint, boolean, integer, pgTable, varchar } from "drizzle-orm/pg-core";
 export const usersTable = pgTable("users", {
   id: varchar({ length: 255 }).primaryKey(),
   name: varchar({ length: 255 }).notNull(),
@@ -13,6 +13,7 @@ export const productTable = pgTable("products", {
   leftover: integer().notNull(),
   description: varchar(),
   price: integer(),
+  delete: boolean(),
   picture: varchar({ length: 255 }),
   userId: varchar({ length: 255 }).references(() => usersTable.id)
 })
