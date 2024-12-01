@@ -20,6 +20,10 @@ export const getTransactionList = async (body) => {
     const list = await db.
     select()
     .from(transactionTable)
+    .where(
+        body.lowDate ? gte(transactionTable.price, body.lowDate) : undefined,
+        body.highDate ? lte(transactionTable.price, body.highDate) : undefined
+    )
     .orderBy(asc(transactionTable.date))
     .limit(body.limit)
     .offset(body.offset)

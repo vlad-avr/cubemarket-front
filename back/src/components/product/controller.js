@@ -1,5 +1,5 @@
 import { buyProduct, getProduct, getProductList, postProduct, updateProduct } from "./logic.js" 
-import { BuyProduct, PostProduct, ProductList, UpdateProduct } from "./schema.js"
+import { BuyProduct, DeleteProduct, PostProduct, ProductList, UpdateProduct } from "./schema.js"
 
 export const ProductController = (server, opts, done) => {
     server.get('/:id', async (req, rep) => {
@@ -15,6 +15,10 @@ export const ProductController = (server, opts, done) => {
     })
 
     server.put('/', { schema: UpdateProduct }, async (req, res) => {
+        return await updateProduct(req.user, req.body)
+    })
+
+    server.delete('/setDelete', { schema: DeleteProduct }, async (req, res) => {
         return await updateProduct(req.user, req.body)
     })
 

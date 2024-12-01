@@ -9,6 +9,7 @@ export const Product = Type.Object({
     picture: Type.Optional(Type.String()),
     userId: Type.String(),
     price: Type.Integer(),
+    delete: Type.Boolean(),
 })
 
 export const ProductList = {
@@ -19,6 +20,7 @@ export const ProductList = {
         lowPrice: Type.Optional(Type.Number()),
         highPrice: Type.Optional(Type.Number()),
         user: Type.Optional(Type.String()),
+        delete: Type.Boolean(),
     }),
     response: {
         200: Type.Array(Product)
@@ -26,12 +28,19 @@ export const ProductList = {
 }
 
 export const PostProduct = {
-    body: Type.Omit(Product, ['id', 'userId', 'leftover']),
+    body: Type.Omit(Product, ['id', 'userId', 'leftover', 'delete']),
     response: {
         200: Type.Object({
             id: Type.String()
         })
     }
+}
+
+export const DeleteProduct = {
+    body: Type.Object({
+        id: Type.String(),
+        delete: Type.Boolean(),
+    }),
 }
 
 export const UpdateProduct = {

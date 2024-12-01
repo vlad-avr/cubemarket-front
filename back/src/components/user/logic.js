@@ -6,6 +6,7 @@ import { eq, sql } from "drizzle-orm"
 import jwt from 'jsonwebtoken'
 import 'dotenv/config';
 import { NotFoundError } from "../../plugins/error/not-found.js"
+import { CustomError } from "../../plugins/error/custom-error.js"
 
 export const getUser = async (id) => {
     const user = (await db.select({
@@ -13,6 +14,8 @@ export const getUser = async (id) => {
         email: usersTable.email,
         name: usersTable.name,
         balance: usersTable.balance,
+        role: usersTable.role,
+        blocked: usersTable.blocked,
     }).from(usersTable).where(eq(usersTable.id, id)))[0]
     if (!user) {
         throw new NotFoundError()
@@ -26,6 +29,8 @@ export const getUserByEmail = async (email) => {
         email: usersTable.email,
         name: usersTable.name,
         balance: usersTable.balance,
+        role: usersTable.role,
+        blocked: usersTable.blocked,
     }).from(usersTable).where(eq(usersTable.email, email)))[0]
     if (!user){
         throw new NotFoundError()
@@ -50,6 +55,8 @@ export const  register = async (body) => {
         id,
         password,
         balance: 0,
+        role: 'client',
+        blocked: false,
     })
     return id
 }
@@ -61,6 +68,9 @@ export const login = async (body) => {
     if(!verified){
         throw new NotFoundError()
     }
+    if(user.blocked){
+        throw new CustomError('User blocked', 403)
+    }
     const token = jwt.sign(user, process.env.SECRET_KEY)
     return { token }
 }
@@ -70,7 +80,8 @@ export const putUser = async (user, body) => {
     .update(usersTable)
     .set({
         name: body.name,
-        balance: sql`(select (${usersTable.balance} + ${body.balance}) as balance from ${usersTable} where ${usersTable.id} = ${user.id})`,
+        balance: body.balance ? sql`(select (${usersTable.balance} + ${body.balance}) as balance from ${usersTable} where ${usersTable.id} = ${user.id})` : body.balance,
+        role: body.role,
     })
     .where(eq(usersTable.id, user.id))
 }
