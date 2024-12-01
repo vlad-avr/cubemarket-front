@@ -1,10 +1,14 @@
-import { bigint, boolean, integer, pgTable, varchar } from "drizzle-orm/pg-core";
+import { bigint, boolean, integer, pgEnum, pgTable, varchar } from "drizzle-orm/pg-core";
+
+export const roleEnum = pgEnum('role', ['client', 'admin', 'superadmin'])
+
 export const usersTable = pgTable("users", {
   id: varchar({ length: 255 }).primaryKey(),
   name: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
   password: varchar().notNull(),
   balance: integer().notNull(),
+  role: roleEnum('role')
 });
 
 export const productTable = pgTable("products", {

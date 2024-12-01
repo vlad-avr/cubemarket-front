@@ -1,10 +1,13 @@
 import { Type } from '@fastify/type-provider-typebox'
 
+export const UserRole = ['client', 'admin', 'superadmin']
+
 export const User = Type.Object({
     email: Type.String(),
     name: Type.String(),
     id: Type.String(),
-    balance: Type.Number()
+    balance: Type.Number(),
+    role: Type.Union(UserRole.map(r => Type.Literal(r))),
 })
 
 export const Register = {
@@ -44,6 +47,7 @@ export const Get = {
 export const Put = {
     body: Type.Partial(Type.Omit(User, [
         'id',
-        'email'
+        'email',
+        'role'
     ]))
 }

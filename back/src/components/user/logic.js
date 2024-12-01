@@ -13,6 +13,7 @@ export const getUser = async (id) => {
         email: usersTable.email,
         name: usersTable.name,
         balance: usersTable.balance,
+        role: usersTable.role,
     }).from(usersTable).where(eq(usersTable.id, id)))[0]
     if (!user) {
         throw new NotFoundError()
@@ -26,6 +27,7 @@ export const getUserByEmail = async (email) => {
         email: usersTable.email,
         name: usersTable.name,
         balance: usersTable.balance,
+        role: usersTable.role,
     }).from(usersTable).where(eq(usersTable.email, email)))[0]
     if (!user){
         throw new NotFoundError()
@@ -50,6 +52,7 @@ export const  register = async (body) => {
         id,
         password,
         balance: 0,
+        role: 'client',
     })
     return id
 }
