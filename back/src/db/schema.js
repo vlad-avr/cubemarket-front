@@ -38,4 +38,5 @@ export const reportTable = pgTable("report", {
   content: text(),
   reporter: varchar({ length: 255 }).references(() => usersTable.id),
   reported: varchar({ length: 255 }).references(() => usersTable.id),
+  reviewed: boolean(),
 })

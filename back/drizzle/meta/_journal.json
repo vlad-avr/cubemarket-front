@@ -43,6 +43,13 @@
       "when": 1733076227320,
       "tag": "0005_colossal_saracen",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1733077199831,
+      "tag": "0006_gifted_enchantress",
+      "breakpoints": true
     }
   ]
 }
