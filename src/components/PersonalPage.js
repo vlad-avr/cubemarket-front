@@ -37,8 +37,33 @@ const PersonalPage = () => {
     const [transferAmount, setTransferAmount] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    const fetchUserInfo = async () => {
+        try {
+            const response = await fetch(`http://localhost:5051/user/${getUserFromToken().id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json()
+                setUserInfo(data);
+                setIsEditing(false);
+                setIsTransferring(false);
+            } else {
+                const error = await response.json();
+                setErrorMessage(error.message || 'Failed to update personal data.');
+            }
+        } catch (error) {
+            console.error('Error updating personal data:', error);
+            setErrorMessage('Network error. Please try again later.');
+        }
+    }
+
     useEffect(() => {
-        if (!localStorage.getItem('token') || !userInfo) {
+        if (!localStorage.getItem('token')) {
             navigate('/auth');
         }
     }, [navigate, userInfo]);
@@ -50,7 +75,7 @@ const PersonalPage = () => {
     const handleEditSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:5051/user', {
+            await fetch('http://localhost:5051/user', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,15 +83,7 @@ const PersonalPage = () => {
                 },
                 body: JSON.stringify(formData),
             });
-
-            if (response.ok) {
-                setUserInfo((prev) => ({ ...prev, name: formData.name }));
-                setIsEditing(false);
-                alert('Personal data updated successfully!');
-            } else {
-                const error = await response.json();
-                setErrorMessage(error.message || 'Failed to update personal data.');
-            }
+            fetchUserInfo()
         } catch (error) {
             console.error('Error updating personal data:', error);
             setErrorMessage('Network error. Please try again later.');
@@ -87,7 +104,7 @@ const PersonalPage = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:5051/user', {
+            await fetch('http://localhost:5051/user', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -95,17 +112,7 @@ const PersonalPage = () => {
                 },
                 body: JSON.stringify({ balance: userInfo.balance + amount }),
             });
-
-            if (response.ok) {
-                const { balance } = await response.json();
-                setUserInfo((prev) => ({ ...prev, balance }));
-                setTransferAmount('');
-                setIsTransferring(false);
-                alert(`Successfully updated balance to $${balance.toFixed(2)}!`);
-            } else {
-                const error = await response.json();
-                setErrorMessage(error.message || 'Failed to transfer funds.');
-            }
+            fetchUserInfo()
         } catch (error) {
             console.error('Error transferring funds:', error);
             setErrorMessage('Network error. Please try again later.');
