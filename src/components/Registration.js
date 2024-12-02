@@ -70,10 +70,12 @@ const Registration = () => {
 
         // Save user data to localStorage
         const userData = {
-          name: formData.name,
-          email: formData.email,
-          role: data.role || 'user', // Assign a role if returned by the API
-          balance: data.balance || 0, // Default balance
+          email: data.email,
+          name: data.name,
+          balance: data.balance,
+          role: data.role,
+          blocked: data.blocked,
+          token: data.token,
         };
         localStorage.setItem('user', JSON.stringify(userData));
 

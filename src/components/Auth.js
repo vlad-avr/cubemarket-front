@@ -10,16 +10,6 @@ const Auth = () => {
 
   const navigate = useNavigate();
 
-  // Mock user data for testing purposes
-  const mockUserData = {
-    id: "12345",
-    name: "John Doe",
-    email: "johndoe@example.com",
-    balance: 1000.0,
-    role: "user",
-    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", // A mock JWT token
-  };
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -47,12 +37,12 @@ const Auth = () => {
 
         // Save the user data to localStorage
         const userData = {
-          id: data.id,
-          name: data.name,
           email: data.email,
-          balance: data.balance || 0,
-          role: data.role || 'user', // Assign default role if not provided
-          token: data.token, // Store JWT token for future use
+          name: data.name,
+          balance: data.balance,
+          role: data.role,
+          blocked: data.blocked,
+          token: data.token,
         };
         localStorage.setItem('user', JSON.stringify(userData));
 
@@ -65,7 +55,6 @@ const Auth = () => {
       }
     } catch (err) {
       console.error('Network error:', err);
-      setMessage('Mock login successful! Testing data saved.');
     }
   };
 

@@ -58,7 +58,20 @@ export const  register = async (body) => {
         role: 'client',
         blocked: false,
     })
-    return id
+    const user = (await db.select({
+        id: usersTable.id,
+        email: usersTable.email,
+        name: usersTable.name,
+        balance: usersTable.balance,
+        role: usersTable.role,
+        blocked: usersTable.blocked,
+    }).from(usersTable).where(eq(usersTable.id, id)))[0]
+    if (!user){
+        throw new NotFoundError()
+    }
+    const token = jwt.sign(user, process.env.SECRET_KEY)
+    user.token = token;
+    return user
 }
 
 export const login = async (body) => {
@@ -72,7 +85,8 @@ export const login = async (body) => {
         throw new CustomError('User blocked', 403)
     }
     const token = jwt.sign(user, process.env.SECRET_KEY)
-    return { token }
+    user.token = token;
+    return user
 }
 
 export const putUser = async (user, body) => {

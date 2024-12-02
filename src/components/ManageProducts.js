@@ -1,22 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ManageProducts.css';
 
 const ManageProducts = () => {
-  const [products, setProducts] = useState([
-    { id: 1, name: 'Product 1', price: '$10', image: 'https://via.placeholder.com/150' },
-    { id: 2, name: 'Product 2', price: '$20', image: 'https://via.placeholder.com/150' },
-  ]);
+  const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ name: '', price: '', image: '' });
   const navigate = useNavigate();
 
-  const handleAddProduct = () => {
-    setProducts([...products, { ...newProduct, id: products.length + 1 }]);
-    setNewProduct({ name: '', price: '', image: '' });
+  // Fetch products from the backend
+  const fetchProducts = async () => {
+    try {
+      // Extract user data from localStorage
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user || !user.id) {
+        console.error('User data is missing or invalid');
+        return;
+      }
+  
+      const response = await fetch(`http://localhost:5051/product?user=${user.id}&delete=false`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('user')).token}`, // Include the authorization token
+        },
+      });
+  
+      if (response.ok) {
+        const productList = await response.json();
+        setProducts(productList);
+      } else {
+        console.error('Failed to fetch products:', response.statusText);
+      }
+    } catch (err) {
+      console.error('Error fetching products:', err);
+    }
   };
 
-  const handleRemoveProduct = (productId) => {
-    setProducts(products.filter((product) => product.id !== productId));
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Add a new product
+  const handleAddProduct = async () => {
+    try {
+      const response = await fetch('http://localhost:5051/product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('user')).token}`, // Add user token for authentication
+        },
+        body: JSON.stringify({
+          name: newProduct.name,
+          price: parseInt(newProduct.price, 10),
+          picture: newProduct.image,
+        }),
+      });
+
+      if (response.ok) {
+        const { id } = await response.json();
+        setProducts([...products, { ...newProduct, id }]);
+        setNewProduct({ name: '', price: '', image: '' });
+      } else {
+        console.error('Failed to add product:', response.statusText);
+      }
+    } catch (err) {
+      console.error('Error adding product:', err);
+    }
+  };
+
+  // Remove a product
+  const handleRemoveProduct = async (productId) => {
+    try {
+      const response = await fetch('http://localhost:5051/product/setDelete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Add user token for authentication
+        },
+        body: JSON.stringify({
+          id: productId,
+          delete: true,
+        }),
+      });
+
+      if (response.ok) {
+        setProducts(products.filter((product) => product.id !== productId));
+      } else {
+        console.error('Failed to delete product:', response.statusText);
+      }
+    } catch (err) {
+      console.error('Error deleting product:', err);
+    }
   };
 
   return (
@@ -25,10 +99,12 @@ const ManageProducts = () => {
       <div className="product-list">
         {products.map((product) => (
           <div key={product.id} className="product-item">
-            <img src={product.image} alt={product.name} />
+            <img src={product.picture || 'https://via.placeholder.com/150'} alt={product.name} />
             <p>{product.name}</p>
-            <p>{product.price}</p>
-            <button className="pp_button" onClick={() => handleRemoveProduct(product.id)}>Remove</button>
+            <p>${product.price}</p>
+            <button className="pp_button" onClick={() => handleRemoveProduct(product.id)}>
+              Remove
+            </button>
           </div>
         ))}
       </div>
@@ -52,10 +128,14 @@ const ManageProducts = () => {
         value={newProduct.image}
         onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
       />
-      <button className="pp_button" onClick={handleAddProduct}>Add Product</button>
+      <button className="pp_button" onClick={handleAddProduct}>
+        Add Product
+      </button>
 
       <div className="navigation-buttons">
-        <button className="pp_button" onClick={() => navigate('/personal')}>Back to Personal Page</button>
+        <button className="pp_button" onClick={() => navigate('/personal')}>
+          Back to Personal Page
+        </button>
       </div>
     </div>
   );

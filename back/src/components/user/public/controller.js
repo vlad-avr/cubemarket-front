@@ -1,5 +1,5 @@
 import { getUser, login, register } from "../logic.js"
-import { Get, Login, Register } from "../schema.js"
+import { FuckedLogin, Get, Login, Register } from "../schema.js"
 
 
 export const PublicUserController = (server, opts, done) => {
@@ -7,14 +7,15 @@ export const PublicUserController = (server, opts, done) => {
         return await getUser(req.params.id)
     })
 
-    server.post('/register', { schema: Register }, async (req, rep) => {
-        const res = await register(req.body)
-        return {
-            id: res
-        }
+    server.post('/register', { schema: FuckedLogin }, async (req, rep) => {
+        // const res = await register(req.body)
+        // return {
+        //     id: res
+        // }
+        return await register(req.body)
     })
 
-    server.post('/login', { schema: Login }, async (req, rep) => {
+    server.post('/login', { schema: FuckedLogin }, async (req, rep) => {
         return await login(req.body)
     })
 
