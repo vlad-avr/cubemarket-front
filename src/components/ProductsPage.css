@@ -1,11 +1,61 @@
 .products-page {
   padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.products-page .search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+  height: 10vh;
+}
+
+.products-page .search-container div {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+  font-size: 14px;
+}
+
+.search-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
 }
 
 .product-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 20px;
   justify-content: center;
 }
 
@@ -14,10 +64,16 @@
   border-radius: 5px;
   padding: 10px;
   margin: 10px;
-  width: 150px;
+  width: 180px;
   text-align: center;
-  transition: transform 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
+}
+
+.product-item img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
 }
 
 .product-item:hover {
@@ -27,11 +83,18 @@
 
 .product-name {
   font-weight: bold;
+  color: #333;
+  margin: 10px 0 5px;
 }
 
-.product-price,
+.product-price {
+  font-size: 14px;
+  color: #28a745;
+}
+
 .product-stock {
-  color: #555;
+  font-size: 14px;
+  color: #6c757d;
 }
 
 .purchase-form {
@@ -40,19 +103,55 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #f9f9f9;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .purchase-form label {
   display: block;
   margin-bottom: 10px;
+  font-size: 14px;
+}
+
+input[type="number"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 14px;
 }
 
 .form-buttons {
   margin-top: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .form-buttons .pp_button {
-  margin-right: 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.form-buttons .pp_button.cancel {
+  background-color: #dc3545;
+  color: white;
+}
+
+.form-buttons .pp_button.cancel:hover {
+  background-color: #a71d2a;
+}
+
+.form-buttons .pp_button {
+  background-color: #28a745;
+  color: white;
+}
+
+.form-buttons .pp_button:hover {
+  background-color: #1c7430;
 }
 
 .navigation-buttons {
@@ -73,4 +172,11 @@
 
 .navigation-buttons .pp_button.back-to-main:hover {
   background-color: #0056b3;
+}
+
+.error-message {
+  text-align: center;
+  color: red;
+  font-size: 14px;
+  margin-bottom: 15px;
 }

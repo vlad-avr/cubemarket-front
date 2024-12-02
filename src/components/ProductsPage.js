@@ -13,6 +13,18 @@ const ProductsPage = () => {
   const [purchaseAmount, setPurchaseAmount] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const [queryParams, setQueryParams] = useState({
+    limit: 10,
+    offset: 0,
+    name: '',
+    lowPrice: null,
+    highPrice: null,
+    delete: false,
+  });
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [productLimit, setProductLimit] = useState(10);
+
   // Decode and validate the token
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -37,39 +49,49 @@ const ProductsPage = () => {
     }
   }, [navigate]);
 
-  // Fetch products from the backend
-  useEffect(() => {
-    const fetchProducts = async () => {
-      
-      try {
-        const response = await fetch('http://localhost:5051/product');
-        if (response.ok) {
-          const productList = await response.json();
-          setProducts(productList);
-          setFilteredProducts(productList); // Initialize filtered products
-        } else {
-          console.error('Failed to fetch products:', response.statusText);
-        }
-      } catch (err) {
-        console.error('Error fetching products:', err);
+  // Fetch products based on query parameters
+  const fetchProducts = async (params) => {
+    const query = new URLSearchParams(
+      Object.entries(params)
+        .filter(([_, value]) => value !== null && value !== undefined && value !== '')
+        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+    ).toString();
+
+    try {
+      const response = await fetch(`http://localhost:5051/product/list?${query}`);
+      if (response.ok) {
+        const productList = await response.json();
+        setProducts(productList);
+        setFilteredProducts(productList);
+      } else {
+        console.error('Failed to fetch products:', response.statusText);
+        setErrorMessage('Failed to fetch products.');
       }
-    };
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      setErrorMessage('Network error. Please try again later.');
+    }
+  };
 
-    fetchProducts();
-  }, []);
+  // Trigger fetch on query parameter change
+  useEffect(() => {
+    fetchProducts(queryParams);
+  }, [queryParams]);
 
-  // Update filtered products when the search query changes
+  // Handle search query update
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const search = params.get('search') || '';
-    const lowerCaseSearch = search.toLowerCase();
+    const searchName = params.get('name') || '';
+    setQueryParams((prev) => ({ ...prev, name: searchName }));
+  }, [location.search]);
 
-    setFilteredProducts(
-      products.filter((product) =>
-        product.name.toLowerCase().includes(lowerCaseSearch)
-      )
-    );
-  }, [location.search, products]);
+  const handleSearchClick = () => {
+    setQueryParams((prev) => ({
+      ...prev,
+      name: searchTerm,
+      limit: productLimit,
+    }));
+  };
 
   const handlePurchase = async (e) => {
     e.preventDefault();
@@ -81,8 +103,8 @@ const ProductsPage = () => {
     }
 
     const requestBody = {
-      productId: selectedProduct.id,
-      quantity: amount,
+      product: selectedProduct.id,
+      amount_sold: amount,
     };
 
     try {
@@ -133,6 +155,33 @@ const ProductsPage = () => {
   return (
     <div className="products-page">
       <h2>Products</h2>
+      <div className="search-container">
+        <div>
+          <label htmlFor="searchTerm">Search:</label>
+          <input
+            id="searchTerm"
+            type="text"
+            placeholder="Search for products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="productLimit">Limit:</label>
+          <input
+            id="productLimit"
+            type="number"
+            placeholder="Number of products"
+            value={productLimit}
+            onChange={(e) => setProductLimit(parseInt(e.target.value, 10) || 10)}
+            min="1"
+          />
+        </div>
+        <button className="search-button" onClick={handleSearchClick}>
+          Search
+        </button>
+      </div>
+
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <div className="product-grid">
         {filteredProducts.map((product) => (
@@ -144,7 +193,7 @@ const ProductsPage = () => {
             <img src={product.image || 'https://via.placeholder.com/150'} alt={product.name} />
             <p className="product-name">{product.name}</p>
             <p className="product-price">${product.price}</p>
-            <p className="product-stock">In stock: {product.stock}</p>
+            <p className="product-stock">In stock: {product.leftover}</p>
           </div>
         ))}
       </div>
