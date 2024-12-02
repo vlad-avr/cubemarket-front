@@ -2,7 +2,7 @@ import { db } from "../../db/index.js"
 import { usersTable } from "../../db/schema.js"
 import { v4 } from 'uuid'
 import bcrypt from 'bcrypt'
-import { eq, sql } from "drizzle-orm"
+import { and, asc, eq, ilike, sql } from "drizzle-orm"
 import jwt from 'jsonwebtoken'
 import 'dotenv/config';
 import { NotFoundError } from "../../plugins/error/not-found.js"
@@ -96,4 +96,23 @@ export const putUser = async (user, body) => {
         role: body.role,
     })
     .where(eq(usersTable.id, user.id))
+}
+
+export const getUserList = async (body) => {
+    const list = await db.
+    select()
+    .from(usersTable)
+    .where(
+        and(
+            body.name ? ilike(usersTable.name, `%${body.name}%`) : undefined,
+            typeof body.blocked === 'boolean'   ? eq(usersTable.blocked, body.blocked) : undefined,
+            body.role ? eq(usersTable.role, body.role) : undefined,
+            body.email ? ilike(usersTable.email, `%${body.email}%`) : undefined,
+        )
+    )
+    .orderBy(asc(usersTable.name))
+    .limit(body.limit)
+    .offset(body.offset)
+
+    return list
 }
