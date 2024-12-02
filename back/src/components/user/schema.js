@@ -53,3 +53,21 @@ export const Put = {
         'blocked'
     ]))
 }
+
+export const UserList = {
+    querystring: Type.Composite([
+        Type.Object({
+            limit: Type.Number(),
+            offset: Type.Number(),
+        }),
+        Type.Partial(Type.Pick(User, [
+            'email',
+            'role',
+            'blocked',
+            'name'
+        ]))
+    ]),
+    response: {
+        200: Type.Array(User)
+    }
+}
