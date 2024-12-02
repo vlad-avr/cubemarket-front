@@ -65,6 +65,16 @@ export const updateProduct = async (user, body) => {
     }).where(and(eq(productTable.id, body.id), eq(productTable.userId, user.id)))
 }
 
+export const deleteProduct = async (user, body) => {
+    await db.update(productTable).set({
+        leftover: body.leftover ? sql`(select (${productTable.leftover} + ${body.leftover}) as leftover from ${productTable} where ${productTable.id} = ${body.id})` : body.leftover,
+        name: body.name,
+        description: body.description,
+        picture: body.picture,
+        delete: body.delete,
+    }).where(and(eq(productTable.id, body.id), eq(productTable.userId, user.id)))
+}
+
 export const buyProduct = async (user, body) => {
     const purchasedProduct = await getProduct(body.product)
     const seller = await getUser(purchasedProduct.userId)

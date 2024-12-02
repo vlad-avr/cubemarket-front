@@ -70,6 +70,7 @@ const Registration = () => {
 
         // Save user data to localStorage
         const userData = {
+          id: data.id,
           email: data.email,
           name: data.name,
           balance: data.balance,

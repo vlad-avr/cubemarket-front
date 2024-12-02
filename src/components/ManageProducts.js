@@ -16,15 +16,16 @@ const ManageProducts = () => {
         console.error('User data is missing or invalid');
         return;
       }
-  
-      const response = await fetch(`http://localhost:5051/product?user=${user.id}&delete=false`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem('user')).token}`, // Include the authorization token
-        },
+
+      const queryParams = new URLSearchParams({
+        user: user.id,       // Pass the user ID
+        delete: 'false',     // Ensure boolean is stringified
+        limit: '10',         // Required parameter as a string
+        offset: '0',         // Required parameter as a string
       });
-  
+
+      const response = await fetch(`http://localhost:5051/product/list?${queryParams}`);
+
       if (response.ok) {
         const productList = await response.json();
         setProducts(productList);
