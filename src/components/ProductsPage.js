@@ -108,7 +108,7 @@ const ProductsPage = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:5051/product/buy', {
+      await fetch('http://localhost:5051/product/buy', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,26 +117,29 @@ const ProductsPage = () => {
         body: JSON.stringify(requestBody),
       });
 
-      if (response.ok) {
-        const updatedProduct = await response.json();
-        setProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product.id === updatedProduct.id ? updatedProduct : product
-          )
-        );
-        setFilteredProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product.id === updatedProduct.id ? updatedProduct : product
-          )
-        );
+      fetchProducts(queryParams);
+      setSelectedProduct(false)
+      alert("Purchase successful")
+      // if (response.ok) {
+      //   const updatedProduct = await response.json();
+      //   setProducts((prevProducts) =>
+      //     prevProducts.map((product) =>
+      //       product.id === updatedProduct.id ? updatedProduct : product
+      //     )
+      //   );
+      //   setFilteredProducts((prevProducts) =>
+      //     prevProducts.map((product) =>
+      //       product.id === updatedProduct.id ? updatedProduct : product
+      //     )
+      //   );
 
-        alert(`Successfully purchased ${amount} of ${selectedProduct.name}!`);
-        setSelectedProduct(null);
-        setPurchaseAmount('');
-      } else {
-        const error = await response.json();
-        setErrorMessage(error.message || 'Purchase failed.');
-      }
+      //   alert(`Successfully purchased ${amount} of ${selectedProduct.name}!`);
+      //   setSelectedProduct(null);
+      //   setPurchaseAmount('');
+      // } else {
+      //   const error = await response.json();
+      //   setErrorMessage(error.message || 'Purchase failed.');
+      // }
     } catch (err) {
       console.error('Error purchasing product:', err);
       setErrorMessage('Network error. Please try again later.');

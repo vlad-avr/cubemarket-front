@@ -63,10 +63,8 @@ const PersonalPage = () => {
     }
 
     useEffect(() => {
-        if (!localStorage.getItem('token')) {
-            navigate('/auth');
-        }
-    }, [navigate, userInfo]);
+        fetchUserInfo(); // Fetch user info when the component mounts
+    }, []);
 
     const handleFormChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
