@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // Import jwtDecode for decoding JWT
 import './ManageProducts.css';
 
 const ManageProducts = () => {
@@ -7,24 +8,41 @@ const ManageProducts = () => {
   const [newProduct, setNewProduct] = useState({ name: '', price: '', image: '' });
   const navigate = useNavigate();
 
+  // Decode JWT token to extract user information
+  const decodeToken = () => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      return jwtDecode(token); // Decode the token
+    } catch (err) {
+      console.error('Invalid JWT token:', err);
+      return null;
+    }
+  };
+
+  const user = decodeToken();
+
+  if (!user) {
+    console.error('User is not authenticated or token is invalid.');
+    navigate('/'); // Redirect to home if the user is not authenticated
+  }
+
   // Fetch products from the backend
   const fetchProducts = async () => {
     try {
-      // Extract user data from localStorage
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (!user || !user.id) {
-        console.error('User data is missing or invalid');
-        return;
-      }
-
       const queryParams = new URLSearchParams({
-        user: user.id,       // Pass the user ID
+        user: user.id,       // Extract user ID from decoded token
         delete: 'false',     // Ensure boolean is stringified
         limit: '10',         // Required parameter as a string
         offset: '0',         // Required parameter as a string
       });
 
-      const response = await fetch(`http://localhost:5051/product/list?${queryParams}`);
+      const response = await fetch(`http://localhost:5051/product/list?${queryParams}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include JWT token
+        },
+      });
 
       if (response.ok) {
         const productList = await response.json();
@@ -48,7 +66,7 @@ const ManageProducts = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem('user')).token}`, // Add user token for authentication
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include JWT token
         },
         body: JSON.stringify({
           name: newProduct.name,
@@ -76,7 +94,7 @@ const ManageProducts = () => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('userToken')}`, // Add user token for authentication
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include JWT token
         },
         body: JSON.stringify({
           id: productId,

@@ -1,21 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // Ensure jwt-decode is installed
 import './ProductsPage.css';
 
 const ProductsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const isUserSignedIn = !!localStorage.getItem('user'); // Check if the user is signed in
-
+  const [user, setUser] = useState(null); // Store user data from the token
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [purchaseAmount, setPurchaseAmount] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Decode and validate the token
   useEffect(() => {
-    // Fetch products from the backend
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        if (decoded.exp * 1000 < Date.now()) {
+          // Token has expired
+          console.error('Token has expired');
+          localStorage.removeItem('token');
+          setUser(null);
+          navigate('/auth'); // Redirect to authentication page
+        } else {
+          setUser(decoded);
+        }
+      } catch (err) {
+        console.error('Error decoding token:', err);
+        setUser(null);
+      }
+    } else {
+      setUser(null);
+    }
+  }, [navigate]);
+
+  // Fetch products from the backend
+  useEffect(() => {
     const fetchProducts = async () => {
+      
       try {
         const response = await fetch('http://localhost:5051/product');
         if (response.ok) {
@@ -33,6 +58,7 @@ const ProductsPage = () => {
     fetchProducts();
   }, []);
 
+  // Update filtered products when the search query changes
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const search = params.get('search') || '';
@@ -54,7 +80,6 @@ const ProductsPage = () => {
       return;
     }
 
-    const user = JSON.parse(localStorage.getItem('user'));
     const requestBody = {
       productId: selectedProduct.id,
       quantity: amount,
@@ -65,7 +90,7 @@ const ProductsPage = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`, // Include token for authentication
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include token for authentication
         },
         body: JSON.stringify(requestBody),
       });
@@ -97,7 +122,7 @@ const ProductsPage = () => {
   };
 
   const handleProductClick = (product) => {
-    if (isUserSignedIn) {
+    if (user) {
       setSelectedProduct(product);
     } else {
       alert('You must be signed in to make a purchase.');
@@ -124,7 +149,7 @@ const ProductsPage = () => {
         ))}
       </div>
 
-      {selectedProduct && isUserSignedIn && (
+      {selectedProduct && user && (
         <div className="purchase-form">
           <h3>Purchase {selectedProduct.name}</h3>
           <form onSubmit={handlePurchase}>

@@ -35,17 +35,8 @@ const Auth = () => {
         const data = await response.json();
         console.log('Login successful:', data);
 
-        // Save the user data to localStorage
-        const userData = {
-          id: data.id,
-          email: data.email,
-          name: data.name,
-          balance: data.balance,
-          role: data.role,
-          blocked: data.blocked,
-          token: data.token,
-        };
-        localStorage.setItem('user', JSON.stringify(userData));
+        // Save the JWT token to localStorage
+        localStorage.setItem('token', data.token);
 
         setMessage('Login successful!');
         navigate('/personal'); // Redirect to Personal Page
@@ -56,8 +47,10 @@ const Auth = () => {
       }
     } catch (err) {
       console.error('Network error:', err);
+      setMessage('Network error: Please try again later.');
     }
   };
+
 
   return (
     <div>

@@ -8,7 +8,7 @@ const MainPage = () => {
 
   // Check if the user is logged in from localStorage
   useEffect(() => {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem('token');
     setIsLoggedIn(!!user);
   }, []);
 
@@ -21,7 +21,7 @@ const MainPage = () => {
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
     navigate('/');
   };

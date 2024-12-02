@@ -1,29 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import './PersonalPage.css';
 
 const PersonalPage = () => {
     const navigate = useNavigate();
 
-    // Extract user info from localStorage or set default values
-    const getUserFromStorage = () => {
-        const user = localStorage.getItem('user');
-        return user ? JSON.parse(user) : { name: '', email: '', balance: 0, role: '' };
+    // Extract user info from the token
+    const getUserFromToken = () => {
+        const token = localStorage.getItem('token');
+        if (!token) return null;
+
+        try {
+            const decoded = jwtDecode(token);
+            return {
+                name: decoded.name,
+                email: decoded.email,
+                balance: decoded.balance || 0, // Use 0 as a default if balance isn't provided
+                role: decoded.role,
+            };
+        } catch (error) {
+            console.error('Invalid token:', error);
+            return null;
+        }
     };
 
-    const [userInfo, setUserInfo] = useState(getUserFromStorage());
+    const [userInfo, setUserInfo] = useState(getUserFromToken());
     const [isEditing, setIsEditing] = useState(false);
     const [isTransferring, setIsTransferring] = useState(false);
     const [formData, setFormData] = useState({
-        name: userInfo.name,
+        name: userInfo?.name || '',
         password: '',
     });
     const [transferAmount, setTransferAmount] = useState('');
 
-    // Sync updates to localStorage when userInfo changes
     useEffect(() => {
-        localStorage.setItem('user', JSON.stringify(userInfo));
-    }, [userInfo]);
+        // Redirect to login if token or user info is missing
+        if (!localStorage.getItem('token') || !userInfo) {
+            navigate('/auth');
+        }
+    }, [navigate, userInfo]);
 
     const handleFormChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,7 +70,7 @@ const PersonalPage = () => {
     };
 
     const handleSignOut = () => {
-        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         navigate('/');
     };
 
@@ -62,13 +78,13 @@ const PersonalPage = () => {
         <div className="personal-page">
             <h2>Personal Page</h2>
             <div className="personal-info">
-                <p><strong>Name:</strong> {userInfo.name}</p>
-                <p><strong>Email:</strong> {userInfo.email}</p>
-                <p><strong>Financial Balance:</strong> ${userInfo.balance.toFixed(2)}</p>
+                <p><strong>Name:</strong> {userInfo?.name}</p>
+                <p><strong>Email:</strong> {userInfo?.email}</p>
+                <p><strong>Financial Balance:</strong> ${userInfo?.balance?.toFixed(2)}</p>
                 <button onClick={() => setIsEditing(!isEditing)}>Edit Personal Data</button>
                 <button onClick={() => setIsTransferring(!isTransferring)}>Transfer Funds</button>
                 <button onClick={() => navigate('/manage_products')}>Manage Products</button>
-                {userInfo.role === 'admin' && (
+                {userInfo?.role === 'admin' && (
                     <button onClick={() => navigate('/manage_users')}>Manage Users</button>
                 )}
                 <button className="main_b" onClick={() => navigate('/')}>Main Page</button>

@@ -70,8 +70,7 @@ export const  register = async (body) => {
         throw new NotFoundError()
     }
     const token = jwt.sign(user, process.env.SECRET_KEY)
-    user.token = token;
-    return user
+    return { token }
 }
 
 export const login = async (body) => {
@@ -85,8 +84,7 @@ export const login = async (body) => {
         throw new CustomError('User blocked', 403)
     }
     const token = jwt.sign(user, process.env.SECRET_KEY)
-    user.token = token;
-    return user
+    return { token }
 }
 
 export const putUser = async (user, body) => {

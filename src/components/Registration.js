@@ -10,7 +10,7 @@ const Registration = () => {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   // Validate form inputs
   const validate = () => {
@@ -53,8 +53,6 @@ const Registration = () => {
       return; // Stop if validation fails
     }
 
-    console.log(`Registration data: `, formData);
-
     try {
       const response = await fetch('http://localhost:5051/user/register', {
         method: 'POST',
@@ -65,20 +63,11 @@ const Registration = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json(); // Expect the response to include the token
         console.log('Registration successful:', data);
 
-        // Save user data to localStorage
-        const userData = {
-          id: data.id,
-          email: data.email,
-          name: data.name,
-          balance: data.balance,
-          role: data.role,
-          blocked: data.blocked,
-          token: data.token,
-        };
-        localStorage.setItem('user', JSON.stringify(userData));
+        // Save the JWT token to localStorage
+        localStorage.setItem('token', data.token);
 
         setMessage('Registration successful!');
         navigate('/personal'); // Redirect to Personal Page or another route

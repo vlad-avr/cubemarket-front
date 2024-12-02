@@ -53,21 +53,3 @@ export const Put = {
         'blocked'
     ]))
 }
-
-export const FuckedLogin = {
-    body: Type.Object({
-        password: Type.String(),
-        email: Type.String()
-    }),
-    response: {
-        200: Type.Object({
-            email: Type.String(),
-            name: Type.String(),
-            id: Type.String(),
-            balance: Type.Number(),
-            role: Type.Union(UserRole.map(r => Type.Literal(r))),
-            blocked: Type.Boolean(),
-            token: Type.String()
-        })
-    }
-}
