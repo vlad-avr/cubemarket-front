@@ -155,7 +155,7 @@ const PersonalPage = () => {
                 <button onClick={() => setIsTransferring(!isTransferring)}>Transfer Funds</button>
                 <button className="pp_button" onClick={fetchTransactions}>View Transactions</button>
                 <button onClick={() => navigate('/manage_products')}>Manage Products</button>
-                {userInfo?.role === 'admin' && (
+                {userInfo?.role === 'admin' || userInfo?.role === "superadmin" && (
                     <button onClick={() => navigate('/manage_users')}>Manage Users</button>
                 )}
                 <button className="main_b" onClick={() => navigate('/')}>Main Page</button>

@@ -7,31 +7,37 @@ const ManageUsers = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Fetch the list of users (assuming there's an API to fetch users)
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch('http://localhost:5051/user', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUsers(data);
-        } else {
-          setErrorMessage('Failed to fetch users.');
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        setErrorMessage('Network error. Please try again later.');
+  const fetchUsers = async () => {
+    const query = new URLSearchParams({
+      limit: '100',
+      offset: '0',
+    });
+  
+    try {
+      const response = await fetch(`http://localhost:5051/admin/user-list?${query}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data);
+      } else {
+        setErrorMessage('Failed to fetch users.');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setErrorMessage('Network error. Please try again later.');
+    }
+  };
+  
+  // Fetch users when the component mounts
+  useEffect(() => {
     fetchUsers();
   }, []);
-
+  
+  // Block/Unblock a user
   const handleBlockUser = async (userId, isBlocked) => {
     try {
       const response = await fetch('http://localhost:5051/admin/set-block', {
@@ -45,13 +51,10 @@ const ManageUsers = () => {
           blocked: isBlocked,
         }),
       });
-
+  
       if (response.ok) {
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user.id === userId ? { ...user, status: isBlocked ? 'blocked' : 'active' } : user
-          )
-        );
+        // Fetch updated user list
+        await fetchUsers();
       } else {
         setErrorMessage('Failed to update user status.');
       }
@@ -60,7 +63,8 @@ const ManageUsers = () => {
       setErrorMessage('Network error. Please try again later.');
     }
   };
-
+  
+  // Change user role
   const handleRoleChange = async (userId, newRole) => {
     try {
       const response = await fetch('http://localhost:5051/superadmin/set-role', {
@@ -74,13 +78,10 @@ const ManageUsers = () => {
           role: newRole,
         }),
       });
-
+  
       if (response.ok) {
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user.id === userId ? { ...user, role: newRole } : user
-          )
-        );
+        // Fetch updated user list
+        await fetchUsers();
       } else {
         setErrorMessage('Failed to update user role.');
       }
@@ -99,7 +100,6 @@ const ManageUsers = () => {
           <tr>
             <th>Name</th>
             <th>Email</th>
-            <th>Status</th>
             <th>Role</th>
             <th>Actions</th>
           </tr>
@@ -109,19 +109,18 @@ const ManageUsers = () => {
             <tr key={user.id}>
               <td>{user.name}</td>
               <td>{user.email}</td>
-              <td>{user.status}</td>
               <td>
                 <select
                   value={user.role}
                   onChange={(e) => handleRoleChange(user.id, e.target.value)}
                 >
-                  <option value="user">User</option>
+                  <option value="client">Client</option>
                   <option value="admin">Admin</option>
                   <option value="superadmin">SuperAdmin</option>
                 </select>
               </td>
               <td>
-                {user.status === 'active' ? (
+                {user.blocked === false ? (
                   <button
                     className="pp_button"
                     onClick={() => handleBlockUser(user.id, true)}
