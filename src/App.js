@@ -10,14 +10,6 @@ import PersonalPage from './components/PersonalPage';
 import ManageProducts from './components/ManageProducts';
 import ManageUsers from './components/ManageUsers';
 
-
-const ROLES = {
-  SuperAdmin: "super_admin",
-  Admin: "admin",
-  User: "user",
-}
-
-
 const App = () => {
   return (
     <Router>

@@ -119,7 +119,6 @@ const ProductsPage = () => {
 
       fetchProducts(queryParams);
       setSelectedProduct(false)
-      alert("Purchase successful")
       // if (response.ok) {
       //   const updatedProduct = await response.json();
       //   setProducts((prevProducts) =>
