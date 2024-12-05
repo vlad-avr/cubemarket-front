@@ -8,6 +8,7 @@ const ManageProducts = () => {
   const [newProduct, setNewProduct] = useState({ name: '', price: '', image: '', leftover: '', description: '' });
   const [editingProduct, setEditingProduct] = useState(null); // Product being edited
   const [editValues, setEditValues] = useState({}); // Values for editing
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const decodeToken = () => {
@@ -60,6 +61,7 @@ const ManageProducts = () => {
   }, []);
 
   const handleAddProduct = async () => {
+    if (!validateNewProduct()) return;
     try {
       const response = await fetch('http://localhost:5051/product', {
         method: 'POST',
@@ -86,6 +88,19 @@ const ManageProducts = () => {
     } catch (err) {
       console.error('Error adding product:', err);
     }
+  };
+
+  const validateNewProduct = () => {
+    const { name, price, image, leftover, description } = newProduct;
+    if (!name || !price || !image || !leftover || !description) {
+      setErrorMessage('All fields are required. Please fill out all fields.');
+      return false;
+    }
+    if (isNaN(parseInt(price, 10)) || isNaN(parseInt(leftover, 10))) {
+      setErrorMessage('Price and stock must be valid numbers.');
+      return false;
+    }
+    return true;
   };
 
   const handleEditProduct = async (productId) => {
@@ -196,6 +211,7 @@ const ManageProducts = () => {
       </div>
 
       <h3>Add New Product</h3>
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <input
         type="text"
         placeholder="Product Name"
