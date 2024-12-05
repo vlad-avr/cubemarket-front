@@ -5,7 +5,9 @@ import './ManageProducts.css';
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({ name: '', price: '', image: '' });
+  const [newProduct, setNewProduct] = useState({ name: '', price: '', image: '', leftover: '' });
+  const [editingStock, setEditingStock] = useState(null); // Product ID for stock editing
+  const [stockValue, setStockValue] = useState(''); // New stock value
   const navigate = useNavigate();
 
   // Decode JWT token to extract user information
@@ -32,15 +34,15 @@ const ManageProducts = () => {
   const fetchProducts = async () => {
     try {
       const queryParams = new URLSearchParams({
-        user: user.id,       // Extract user ID from decoded token
-        delete: 'false',     // Ensure boolean is stringified
-        limit: '10',         // Required parameter as a string
-        offset: '0',         // Required parameter as a string
+        user: user.id,
+        delete: 'false',
+        limit: '10',
+        offset: '0',
       });
 
       const response = await fetch(`http://localhost:5051/product/list?${queryParams}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include JWT token
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
@@ -66,24 +68,56 @@ const ManageProducts = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include JWT token
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({
           name: newProduct.name,
           price: parseInt(newProduct.price, 10),
           picture: newProduct.image,
+          leftover: parseInt(newProduct.leftover, 10), // Include stock value
         }),
       });
 
       if (response.ok) {
         const { id } = await response.json();
         setProducts([...products, { ...newProduct, id }]);
-        setNewProduct({ name: '', price: '', image: '' });
+        setNewProduct({ name: '', price: '', image: '', leftover: '' });
       } else {
         console.error('Failed to add product:', response.statusText);
       }
     } catch (err) {
       console.error('Error adding product:', err);
+    }
+  };
+
+  // Update stock for an existing product
+  const handleUpdateStock = async (productId) => {
+    try {
+      const response = await fetch('http://localhost:5051/product', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({
+          id: productId,
+          leftover: parseInt(stockValue, 10),
+        }),
+      });
+
+      if (response.ok) {
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product.id === productId ? { ...product, leftover: parseInt(stockValue, 10) } : product
+          )
+        );
+        setEditingStock(null);
+        setStockValue('');
+      } else {
+        console.error('Failed to update stock:', response.statusText);
+      }
+    } catch (err) {
+      console.error('Error updating stock:', err);
     }
   };
 
@@ -94,7 +128,7 @@ const ManageProducts = () => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include JWT token
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({
           id: productId,
@@ -120,10 +154,23 @@ const ManageProducts = () => {
           <div key={product.id} className="product-item">
             <img src={product.picture || 'https://via.placeholder.com/150'} alt={product.name} />
             <p>{product.name}</p>
-            <p>${product.price}</p>
-            <button className="pp_button" onClick={() => handleRemoveProduct(product.id)}>
-              Remove
-            </button>
+            <p>Price: ${product.price}</p>
+            <p>Stock: {product.leftover}</p>
+            {editingStock === product.id ? (
+              <div>
+                <input
+                  type="number"
+                  value={stockValue}
+                  onChange={(e) => setStockValue(e.target.value)}
+                  placeholder="Enter new stock"
+                />
+                <button onClick={() => handleUpdateStock(product.id)}>Save</button>
+                <button onClick={() => setEditingStock(null)}>Cancel</button>
+              </div>
+            ) : (
+              <button onClick={() => setEditingStock(product.id)}>Edit Stock</button>
+            )}
+            <button onClick={() => handleRemoveProduct(product.id)}>Remove</button>
           </div>
         ))}
       </div>
@@ -147,14 +194,16 @@ const ManageProducts = () => {
         value={newProduct.image}
         onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
       />
-      <button className="pp_button" onClick={handleAddProduct}>
-        Add Product
-      </button>
+      <input
+        type="number"
+        placeholder="Product Stock"
+        value={newProduct.leftover}
+        onChange={(e) => setNewProduct({ ...newProduct, leftover: e.target.value })}
+      />
+      <button onClick={handleAddProduct}>Add Product</button>
 
       <div className="navigation-buttons">
-        <button className="pp_button" onClick={() => navigate('/personal')}>
-          Back to Personal Page
-        </button>
+        <button onClick={() => navigate('/personal')}>Back to Personal Page</button>
       </div>
     </div>
   );

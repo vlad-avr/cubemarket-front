@@ -108,7 +108,7 @@ const PersonalPage = () => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ balance: userInfo.balance + amount }),
+                body: JSON.stringify({ balance: amount }),
             });
             fetchUserInfo()
         } catch (error) {
