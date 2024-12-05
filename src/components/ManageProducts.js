@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // Import jwtDecode for decoding JWT
+import { jwtDecode } from 'jwt-decode';
 import './ManageProducts.css';
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({ name: '', price: '', image: '', leftover: '' });
-  const [editingStock, setEditingStock] = useState(null); // Product ID for stock editing
-  const [stockValue, setStockValue] = useState(''); // New stock value
+  const [newProduct, setNewProduct] = useState({ name: '', price: '', image: '', leftover: '', description: '' });
+  const [editingProduct, setEditingProduct] = useState(null); // Product being edited
+  const [editValues, setEditValues] = useState({}); // Values for editing
   const navigate = useNavigate();
 
-  // Decode JWT token to extract user information
   const decodeToken = () => {
     const token = localStorage.getItem('token');
     if (!token) return null;
 
     try {
-      return jwtDecode(token); // Decode the token
+      return jwtDecode(token);
     } catch (err) {
       console.error('Invalid JWT token:', err);
       return null;
@@ -27,10 +26,9 @@ const ManageProducts = () => {
 
   if (!user) {
     console.error('User is not authenticated or token is invalid.');
-    navigate('/'); // Redirect to home if the user is not authenticated
+    navigate('/');
   }
 
-  // Fetch products from the backend
   const fetchProducts = async () => {
     try {
       const queryParams = new URLSearchParams({
@@ -61,7 +59,6 @@ const ManageProducts = () => {
     fetchProducts();
   }, []);
 
-  // Add a new product
   const handleAddProduct = async () => {
     try {
       const response = await fetch('http://localhost:5051/product', {
@@ -74,14 +71,15 @@ const ManageProducts = () => {
           name: newProduct.name,
           price: parseInt(newProduct.price, 10),
           picture: newProduct.image,
-          leftover: parseInt(newProduct.leftover, 10), // Include stock value
+          leftover: parseInt(newProduct.leftover, 10),
+          description: newProduct.description,
         }),
       });
 
       if (response.ok) {
         const { id } = await response.json();
         setProducts([...products, { ...newProduct, id }]);
-        setNewProduct({ name: '', price: '', image: '', leftover: '' });
+        setNewProduct({ name: '', price: '', image: '', leftover: '', description: '' });
       } else {
         console.error('Failed to add product:', response.statusText);
       }
@@ -90,8 +88,7 @@ const ManageProducts = () => {
     }
   };
 
-  // Update stock for an existing product
-  const handleUpdateStock = async (productId) => {
+  const handleEditProduct = async (productId) => {
     try {
       const response = await fetch('http://localhost:5051/product', {
         method: 'PUT',
@@ -101,27 +98,28 @@ const ManageProducts = () => {
         },
         body: JSON.stringify({
           id: productId,
-          leftover: parseInt(stockValue, 10),
+          ...editValues,
+          leftover: parseInt(editValues.leftover, 10),
+          price: parseInt(editValues.price, 10),
         }),
       });
 
       if (response.ok) {
         setProducts((prevProducts) =>
           prevProducts.map((product) =>
-            product.id === productId ? { ...product, leftover: parseInt(stockValue, 10) } : product
+            product.id === productId ? { ...product, ...editValues } : product
           )
         );
-        setEditingStock(null);
-        setStockValue('');
+        setEditingProduct(null);
+        setEditValues({});
       } else {
-        console.error('Failed to update stock:', response.statusText);
+        console.error('Failed to edit product:', response.statusText);
       }
     } catch (err) {
-      console.error('Error updating stock:', err);
+      console.error('Error editing product:', err);
     }
   };
 
-  // Remove a product
   const handleRemoveProduct = async (productId) => {
     try {
       const response = await fetch('http://localhost:5051/product/setDelete', {
@@ -153,24 +151,46 @@ const ManageProducts = () => {
         {products.map((product) => (
           <div key={product.id} className="product-item">
             <img src={product.picture || 'https://via.placeholder.com/150'} alt={product.name} />
-            <p>{product.name}</p>
-            <p>Price: ${product.price}</p>
-            <p>Stock: {product.leftover}</p>
-            {editingStock === product.id ? (
-              <div>
+            {editingProduct === product.id ? (
+              <>
+                <input
+                  type="text"
+                  value={editValues.name || ''}
+                  onChange={(e) => setEditValues({ ...editValues, name: e.target.value })}
+                  placeholder="Edit name"
+                />
+                <textarea
+                  value={editValues.description || ''}
+                  onChange={(e) => setEditValues({ ...editValues, description: e.target.value })}
+                  placeholder="Edit description"
+                />
                 <input
                   type="number"
-                  value={stockValue}
-                  onChange={(e) => setStockValue(e.target.value)}
-                  placeholder="Enter new stock"
+                  value={editValues.price || ''}
+                  onChange={(e) => setEditValues({ ...editValues, price: e.target.value })}
+                  placeholder="Edit price"
                 />
-                <button onClick={() => handleUpdateStock(product.id)}>Save</button>
-                <button onClick={() => setEditingStock(null)}>Cancel</button>
-              </div>
+                <input
+                  type="number"
+                  value={editValues.leftover || ''}
+                  onChange={(e) => setEditValues({ ...editValues, leftover: e.target.value })}
+                  placeholder="Edit stock"
+                />
+                <button onClick={() => handleEditProduct(product.id)}>Save</button>
+                <button onClick={() => setEditingProduct(null)}>Cancel</button>
+              </>
             ) : (
-              <button onClick={() => setEditingStock(product.id)}>Edit Stock</button>
+              <>
+                <p>{product.name}</p>
+                <p>Description: {product.description}</p>
+                <p>Price: ${product.price}</p>
+                <p>Stock: {product.leftover}</p>
+                <button onClick={() => { setEditingProduct(product.id); setEditValues(product); }}>
+                  Edit
+                </button>
+                <button onClick={() => handleRemoveProduct(product.id)}>Remove</button>
+              </>
             )}
-            <button onClick={() => handleRemoveProduct(product.id)}>Remove</button>
           </div>
         ))}
       </div>
@@ -181,6 +201,11 @@ const ManageProducts = () => {
         placeholder="Product Name"
         value={newProduct.name}
         onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+      />
+      <textarea
+        placeholder="Product Description"
+        value={newProduct.description}
+        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
       />
       <input
         type="text"
@@ -195,7 +220,7 @@ const ManageProducts = () => {
         onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
       />
       <input
-        type="number"
+        type="text"
         placeholder="Product Stock"
         value={newProduct.leftover}
         onChange={(e) => setNewProduct({ ...newProduct, leftover: e.target.value })}

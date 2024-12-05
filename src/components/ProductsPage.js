@@ -118,27 +118,7 @@ const ProductsPage = () => {
       });
 
       fetchProducts(queryParams);
-      setSelectedProduct(false)
-      // if (response.ok) {
-      //   const updatedProduct = await response.json();
-      //   setProducts((prevProducts) =>
-      //     prevProducts.map((product) =>
-      //       product.id === updatedProduct.id ? updatedProduct : product
-      //     )
-      //   );
-      //   setFilteredProducts((prevProducts) =>
-      //     prevProducts.map((product) =>
-      //       product.id === updatedProduct.id ? updatedProduct : product
-      //     )
-      //   );
-
-      //   alert(`Successfully purchased ${amount} of ${selectedProduct.name}!`);
-      //   setSelectedProduct(null);
-      //   setPurchaseAmount('');
-      // } else {
-      //   const error = await response.json();
-      //   setErrorMessage(error.message || 'Purchase failed.');
-      // }
+      setSelectedProduct(false);
     } catch (err) {
       console.error('Error purchasing product:', err);
       setErrorMessage('Network error. Please try again later.');
@@ -196,6 +176,7 @@ const ProductsPage = () => {
             <p className="product-name">{product.name}</p>
             <p className="product-price">${product.price}</p>
             <p className="product-stock">In stock: {product.leftover}</p>
+            <p className="product-description">{product.description || 'No description available.'}</p>
           </div>
         ))}
       </div>

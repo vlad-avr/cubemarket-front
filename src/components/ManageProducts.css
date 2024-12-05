@@ -24,6 +24,12 @@
     padding: 8px;
     width: 100%;
   }
+
+  textarea {
+    margin: 10px 0;
+    padding: 8px;
+    width: 100%;
+  }
   
   .pp_button {
     background-color: #4CAF50;
