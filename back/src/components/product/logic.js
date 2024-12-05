@@ -43,7 +43,7 @@ export const postProduct = async (user, body) => {
     const id = v4()
     await db.insert(productTable).values({
         id,
-        leftover: 0,
+        leftover: body.leftover,
         name: body.name,
         description: body.description,
         picture: body.picture,
